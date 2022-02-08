@@ -1,15 +1,34 @@
 import { Color } from "./enums/Color"
 
+
 export class TRendere {
+
+    canvasWidth: number
+    canvasHeight: number
 
     canvas: HTMLCanvasElement
     ctx: CanvasRenderingContext2D
+
     currentColor: string
+
+    lineWidth: number
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas
         this.ctx = <CanvasRenderingContext2D>this.canvas.getContext("2d")
         this.currentColor = Color.GREY
+        this.lineWidth = 5
+
+        this.canvasWidth = this.canvas.width
+        this.canvasHeight = this.canvas.height
+    }
+
+    /**
+     * 
+     * @param w Width of the line
+     */
+    setLineWidth(w: number): void {
+        this.lineWidth = w
     }
 
     /**
@@ -21,6 +40,21 @@ export class TRendere {
             this.currentColor = c
             this.ctx.fillStyle = this.currentColor
         }
+    }
+
+    /**
+     * 
+     * @param x X-starting point of line
+     * @param y Y-starting point of line
+     * @param dx X-ending point of line
+     * @param dy Y-ending point of lime
+     */
+    drawLine(x: number, y: number, dx: number, dy: number) {
+        this.ctx.beginPath()
+        this.ctx.moveTo(x, y)
+        this.ctx.lineTo(dx, dy)
+        this.ctx.closePath()
+        this.ctx.stroke()
     }
 
     /**
@@ -93,10 +127,17 @@ export class TRendere {
         img.src = image
 
         img.onload = () => {
-            if(h && w){
+            if (h && w) {
                 return this.ctx.drawImage(img, x, y, w, h)
             }
             this.ctx.drawImage(img, x, y)
         }
+    }
+
+    /**
+     * Clears the entire screen
+     */
+    clear(): void {
+        this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
     }
 }
